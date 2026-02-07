@@ -5,7 +5,7 @@ import os
 
 # URL de conexão fornecida (Neon / Vercel Postgres)
 # Usando a versão "pooled" para melhor performance em serverless
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
 
 # Cria a "engine" de conexão
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
