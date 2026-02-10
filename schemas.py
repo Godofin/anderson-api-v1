@@ -1,73 +1,75 @@
-from pydantic import BaseModel, EmailStr
-from typing import List, Optional
-from datetime import date, datetime
+from pydantic import BaseModel, Field
+from typing import Optional, List, Union
+from datetime import datetime, date
 
-# --- User Schemas ---
-class UserBase(BaseModel):
-    username: str
-    email: EmailStr
-    avatar_url: Optional[str] = None
+class EventBase(BaseModel):
+    image: str
+    alt: str
+    title: str
+    date: str
+    # Aceita string ou date para evitar erros de validação (422)
+    date_event: Union[date, str]
+    year: str
+    description: str
+    buttonText: str
+    eventName: str
+    cities: List[str] = []
+    active_event: bool = True
+    ecommerce_link: Optional[str] = None
 
-class UserCreate(UserBase):
-    password: str
+    class Config:
+        from_attributes = True
+        json_schema_extra = {
+            "example": {
+                "image": "https://exemplo.com/imagem.jpg",
+                "alt": "Shows/Eventos",
+                "title": "Excursão Incrível",
+                "date": "20 a 22 de Novembro",
+                "date_event": "2025-11-20",
+                "year": "2025",
+                "description": "Detalhes da viagem...",
+                "buttonText": "Reservar",
+                "eventName": "excursao-novembro",
+                "cities": ["São Paulo", "Ubatuba"],
+                "active_event": True,
+                "ecommerce_link": "https://wa.me/..."
+            }
+        }
 
-class User(UserBase):
+class EventCreate(EventBase):
+    pass
+
+class EventUpdate(BaseModel):
+    image: Optional[str] = None
+    alt: Optional[str] = None
+    title: Optional[str] = None
+    date: Optional[str] = None
+    # Permite str ou date na atualização também
+    date_event: Optional[Union[date, str]] = None
+    year: Optional[str] = None
+    description: Optional[str] = None
+    buttonText: Optional[str] = None
+    eventName: Optional[str] = None
+    cities: Optional[List[str]] = None
+    active_event: Optional[bool] = None
+    ecommerce_link: Optional[str] = None
+
+class Event(EventBase):
     id: int
-    level: str
-    total_shows: int
+
+    class Config:
+        from_attributes = True
+
+
+class RatingCreate(BaseModel):
+    event_name: str = Field(..., description="Nome do evento avaliado")
+    reviewer_name: str = Field(..., description="Nome da pessoa que fez a avaliação")
+    score: int = Field(..., ge=0, le=5, description="Nota de 0 a 5")
+    comment: Optional[str] = Field(None, description="Comentários adicionais")
+
+class Rating(RatingCreate):
+    id: int
     created_at: datetime
 
     class Config:
         from_attributes = True
-
-# --- Artist Schemas ---
-class ArtistBase(BaseModel):
-    name: str
-    mbid: Optional[str] = None
-    genre: Optional[str] = None
-    image_url: Optional[str] = None
-    is_popular: bool = False
-
-class ArtistCreate(ArtistBase):
-    pass
-
-class Artist(ArtistBase):
-    id: int
-
-    class Config:
-        from_attributes = True
-
-# --- ShowLog Schemas ---
-class ShowLogBase(BaseModel):
-    artist_id: int
-    event_name: str
-    venue_name: str
-    city: Optional[str] = None
-    country: Optional[str] = None
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
-    show_date: date
-    rating: Optional[int] = None
-    comment: Optional[str] = None
-    media_url: Optional[str] = None
-    favorite_song: Optional[str] = None
-    companion: Optional[str] = None
-
-class ShowLogCreate(ShowLogBase):
-    pass
-
-class ShowLog(ShowLogBase):
-    id: int
-    user_id: int
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
-
-# --- Stats Schemas ---
-class FanStats(BaseModel):
-    total_shows: int
-    total_festivals: int
-    most_seen_artist: Optional[str]
-    predominant_genre: Optional[str]
-    fan_level: str
