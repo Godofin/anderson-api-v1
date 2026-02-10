@@ -10,7 +10,7 @@ import schemas
 router = APIRouter()
 
 # ===============================================
-# --- ROTAS DE EVENTOS ---
+# --- ROTAS DE EVENTOS --- modify
 # ===============================================
 
 # --- ROTA POST (CRIAÇÃO DE EVENTO) ---
