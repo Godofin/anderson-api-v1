@@ -36,3 +36,16 @@ class Rating(Base):
     score = Column(Integer, nullable=False)
     comment = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+# ===============================================
+# --- NOVO MODELO: LINKTREE ---
+# ===============================================
+class Linktree(Base):
+    __tablename__ = "linktree_links"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)            # Nome da excursão
+    image_url = Column(String, nullable=True)        # Link da imagem
+    whatsapp_url = Column(String, nullable=False)    # Link do grupo do whatsapp
+    active = Column(Boolean, default=True)           # Para ativar/desativar facilmente
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

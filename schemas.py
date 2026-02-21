@@ -73,3 +73,29 @@ class Rating(RatingCreate):
 
     class Config:
         from_attributes = True
+
+# ===============================================
+# --- NOVOS SCHEMAS: LINKTREE ---
+# ===============================================
+
+class LinktreeBase(BaseModel):
+    name: str = Field(..., description="Nome da excursão")
+    image_url: Optional[str] = Field(None, description="Link da imagem representativa")
+    whatsapp_url: str = Field(..., description="Link do grupo do WhatsApp")
+    active: bool = True
+
+class LinktreeCreate(LinktreeBase):
+    pass
+
+class LinktreeUpdate(BaseModel):
+    name: Optional[str] = None
+    image_url: Optional[str] = None
+    whatsapp_url: Optional[str] = None
+    active: Optional[bool] = None
+
+class LinktreeResponse(LinktreeBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

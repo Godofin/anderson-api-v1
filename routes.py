@@ -10,7 +10,7 @@ import schemas
 router = APIRouter()
 
 # ===============================================
-# --- ROTAS DE EVENTOS --- modify
+# --- ROTAS DE EVENTOS ---
 # ===============================================
 
 # --- ROTA POST (CRIAÇÃO DE EVENTO) ---
@@ -97,7 +97,7 @@ async def delete_event(event_id: int, db: Session = Depends(get_db)):
 
 
 # ===============================================
-# --- NOVAS ROTAS DE RATING ---
+# --- ROTAS DE RATING ---
 # ===============================================
 
 # --- ROTA POST (CRIAÇÃO DE RATING) ---
@@ -138,3 +138,83 @@ async def get_ratings_by_event(event_name: str, db: Session = Depends(get_db)):
         return ratings
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao buscar avaliações: {str(e)}")
+
+
+# ===============================================
+# --- NOVAS ROTAS: LINKTREE ---
+# ===============================================
+
+@router.post("/linktree", response_model=schemas.LinktreeResponse, status_code=status.HTTP_201_CREATED, tags=["Linktree"])
+async def create_linktree(link_data: schemas.LinktreeCreate, db: Session = Depends(get_db)):
+    """ Cria um novo link de grupo para a página Linktree. """
+    try:
+        new_link = models.Linktree(**link_data.model_dump())
+        db.add(new_link)
+        db.commit()
+        db.refresh(new_link)
+        return new_link
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Erro ao criar link: {str(e)}")
+
+@router.get("/linktree", response_model=List[schemas.LinktreeResponse], tags=["Linktree"])
+async def get_active_linktree(db: Session = Depends(get_db)):
+    """ Retorna todos os links ATIVOS para o Linktree. """
+    try:
+        links = db.query(models.Linktree).filter(models.Linktree.active == True).order_by(models.Linktree.created_at.desc()).all()
+        return links
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/linktree/all", response_model=List[schemas.LinktreeResponse], tags=["Linktree"])
+async def get_all_linktree(db: Session = Depends(get_db)):
+    """ Retorna TODOS os links do Linktree (ativos e inativos). """
+    try:
+        links = db.query(models.Linktree).order_by(models.Linktree.created_at.desc()).all()
+        return links
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/linktree/{link_id}", response_model=schemas.LinktreeResponse, tags=["Linktree"])
+async def get_linktree_by_id(link_id: int, db: Session = Depends(get_db)):
+    """ Retorna um link específico pelo seu ID. """
+    try:
+        link = db.query(models.Linktree).filter(models.Linktree.id == link_id).first()
+        if not link:
+            raise HTTPException(status_code=404, detail="Link não encontrado.")
+        return link
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/linktree/{link_id}", response_model=schemas.LinktreeResponse, tags=["Linktree"])
+async def update_linktree(link_id: int, link_update: schemas.LinktreeUpdate, db: Session = Depends(get_db)):
+    """ Atualiza os dados de um link do Linktree. """
+    try:
+        db_link = db.query(models.Linktree).filter(models.Linktree.id == link_id).first()
+        if not db_link:
+            raise HTTPException(status_code=404, detail="Link não encontrado.")
+        
+        update_data = link_update.model_dump(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(db_link, key, value)
+        
+        db.commit()
+        db.refresh(db_link)
+        return db_link
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/linktree/{link_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Linktree"])
+async def delete_linktree(link_id: int, db: Session = Depends(get_db)):
+    """ Deleta um link do Linktree. """
+    try:
+        db_link = db.query(models.Linktree).filter(models.Linktree.id == link_id).first()
+        if not db_link:
+            raise HTTPException(status_code=404, detail="Link não encontrado.")
+        
+        db.delete(db_link)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
