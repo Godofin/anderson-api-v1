@@ -83,6 +83,7 @@ class LinktreeBase(BaseModel):
     image_url: Optional[str] = Field(None, description="Link da imagem representativa")
     whatsapp_url: str = Field(..., description="Link do grupo do WhatsApp")
     active: bool = True
+    event_date: Optional[Union[date, str]] = Field(None, description="Data do evento")
 
 class LinktreeCreate(LinktreeBase):
     pass
@@ -92,10 +93,4 @@ class LinktreeUpdate(BaseModel):
     image_url: Optional[str] = None
     whatsapp_url: Optional[str] = None
     active: Optional[bool] = None
-
-class LinktreeResponse(LinktreeBase):
-    id: int
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
+    event_date: Optional[Union[date, str]] = None

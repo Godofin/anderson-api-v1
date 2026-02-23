@@ -48,4 +48,5 @@ class Linktree(Base):
     image_url = Column(String, nullable=True)        # Link da imagem
     whatsapp_url = Column(String, nullable=False)    # Link do grupo do whatsapp
     active = Column(Boolean, default=True)           # Para ativar/desativar facilmente
+    event_date = Column(Date, nullable=True)         # NOVA COLUNA: Data do evento
     created_at = Column(DateTime(timezone=True), server_default=func.now())
