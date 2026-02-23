@@ -94,3 +94,10 @@ class LinktreeUpdate(BaseModel):
     whatsapp_url: Optional[str] = None
     active: Optional[bool] = None
     event_date: Optional[Union[date, str]] = None
+
+class LinktreeResponse(LinktreeBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
