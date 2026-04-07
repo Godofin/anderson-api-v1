@@ -38,6 +38,18 @@ async def get_active_events(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/events/destaque", response_model=List[schemas.Event], tags=["Events"])
+async def get_destaque_events(db: Session = Depends(get_db)):
+    """ Retorna todos os eventos marcados como DESTAQUE e ativos. """
+    try:
+        events = db.query(models.Event).filter(
+            models.Event.destaque == True,
+            models.Event.active_event == True
+        ).order_by(models.Event.id).all()
+        return events
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/events/all", response_model=List[schemas.Event], tags=["Events"])
 async def get_all_events(db: Session = Depends(get_db)):
     """ Retorna TODOS os eventos, ativos e inativos. """
@@ -162,6 +174,18 @@ async def get_active_linktree(db: Session = Depends(get_db)):
     """ Retorna todos os links ATIVOS para o Linktree. """
     try:
         links = db.query(models.Linktree).filter(models.Linktree.active == True).order_by(models.Linktree.created_at.desc()).all()
+        return links
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/linktree/destaque", response_model=List[schemas.LinktreeResponse], tags=["Linktree"])
+async def get_destaque_linktree(db: Session = Depends(get_db)):
+    """ Retorna todos os links do Linktree marcados como DESTAQUE e ativos. """
+    try:
+        links = db.query(models.Linktree).filter(
+            models.Linktree.destaque == True,
+            models.Linktree.active == True
+        ).order_by(models.Linktree.created_at.desc()).all()
         return links
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -16,6 +16,7 @@ class EventBase(BaseModel):
     cities: List[str] = []
     active_event: bool = True
     ecommerce_link: Optional[str] = None
+    destaque: bool = False
 
     class Config:
         from_attributes = True
@@ -53,6 +54,7 @@ class EventUpdate(BaseModel):
     cities: Optional[List[str]] = None
     active_event: Optional[bool] = None
     ecommerce_link: Optional[str] = None
+    destaque: Optional[bool] = None
 
 class Event(EventBase):
     id: int
@@ -84,6 +86,7 @@ class LinktreeBase(BaseModel):
     whatsapp_url: str = Field(..., description="Link do grupo do WhatsApp")
     active: bool = True
     event_date: Optional[Union[date, str]] = Field(None, description="Data da excursão")
+    destaque: bool = False
 
 class LinktreeCreate(LinktreeBase):
     pass
@@ -94,6 +97,7 @@ class LinktreeUpdate(BaseModel):
     whatsapp_url: Optional[str] = None
     active: Optional[bool] = None
     event_date: Optional[Union[date, str]] = None
+    destaque: Optional[bool] = None
 
 class LinktreeResponse(LinktreeBase):
     id: int

@@ -26,6 +26,7 @@ class Event(Base):
     cities = Column(ARRAY(String), default=[])
     active_event = Column(Boolean, default=True)
     ecommerce_link = Column(String, nullable=True)
+    destaque = Column(Boolean, default=False)
 
 class Rating(Base):
     __tablename__ = "rating"
@@ -49,4 +50,5 @@ class Linktree(Base):
     whatsapp_url = Column(String, nullable=False)    # Link do grupo do whatsapp
     active = Column(Boolean, default=True)           # Para ativar/desativar facilmente
     event_date = Column(Date, nullable=True)         # NOVA COLUNA: Data do evento
+    destaque = Column(Boolean, default=False)        # Para marcar como destaque
     created_at = Column(DateTime(timezone=True), server_default=func.now())
