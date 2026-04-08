@@ -26,6 +26,7 @@ class Event(Base):
     cities = Column(ARRAY(String), default=[])
     active_event = Column(Boolean, default=True)
     ecommerce_link = Column(String, nullable=True)
+    saiba_mais_link = Column(String, nullable=True)
     destaque = Column(Boolean, default=False)
 
 class Rating(Base):

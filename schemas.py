@@ -16,6 +16,7 @@ class EventBase(BaseModel):
     cities: List[str] = []
     active_event: bool = True
     ecommerce_link: Optional[str] = None
+    saiba_mais_link: Optional[str] = None
     destaque: bool = False
 
     class Config:
@@ -54,6 +55,7 @@ class EventUpdate(BaseModel):
     cities: Optional[List[str]] = None
     active_event: Optional[bool] = None
     ecommerce_link: Optional[str] = None
+    saiba_mais_link: Optional[str] = None
     destaque: Optional[bool] = None
 
 class Event(EventBase):
